@@ -1,0 +1,200 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-red-hat), ui-sans-serif, system-ui, sans-serif;
+
+  /* Brand — navy spine, gold accent (GMR-style), warm ember for data (Adani-style) */
+  --color-ink: #16181d;
+  --color-navy-950: #071b31;
+  --color-navy-900: #0a2540;
+  --color-navy-800: #0f3a6b;
+  --color-navy-700: #14538f;
+  --color-navy-600: #2a6fb5;
+  --color-gold-600: #e0a02c;
+  --color-gold-500: #f5b841;
+  --color-gold-400: #fbc85c;
+  --color-gold-100: #fdeecd;
+  --color-ember-600: #d1531f;
+  --color-ember-500: #e8622c;
+  --color-cream: #fdf3e0;
+  --color-mist: #e4ebf7;
+  --color-sand: #f7f4ee;
+
+  --shadow-card: 0 18px 45px -22px rgb(10 37 64 / 0.45);
+  --shadow-lift: 0 30px 70px -30px rgb(10 37 64 / 0.55);
+}
+
+* {
+  border-color: rgb(15 58 107 / 0.12);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: #ffffff;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: #f5b841;
+  color: #0a2540;
+}
+
+::-webkit-scrollbar {
+  width: 11px;
+}
+::-webkit-scrollbar-track {
+  background: #eef2f8;
+}
+::-webkit-scrollbar-thumb {
+  background: #b8c6da;
+  border-radius: 99px;
+  border: 3px solid #eef2f8;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8fa4c0;
+}
+
+@utility container-x {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 84rem;
+  padding-inline: 1.25rem;
+  @media (min-width: 768px) {
+    padding-inline: 2rem;
+  }
+  @media (min-width: 1280px) {
+    padding-inline: 2.5rem;
+  }
+}
+
+/* Display scale — light weights at large sizes, like the reference sites */
+@utility display-1 {
+  font-size: clamp(2.5rem, 6.2vw, 4.75rem);
+  line-height: 1.03;
+  letter-spacing: -0.028em;
+  font-weight: 400;
+}
+
+@utility display-2 {
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  line-height: 1.08;
+  letter-spacing: -0.024em;
+  font-weight: 400;
+}
+
+@utility display-3 {
+  font-size: clamp(1.5rem, 2.4vw, 2.125rem);
+  line-height: 1.15;
+  letter-spacing: -0.018em;
+  font-weight: 500;
+}
+
+@utility eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+@utility hairline-grid {
+  background-image: linear-gradient(
+      to right,
+      rgb(255 255 255 / 0.055) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.055) 1px, transparent 1px);
+  background-size: 88px 88px;
+}
+
+@keyframes ie-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 26px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ie-slow-zoom {
+  from {
+    transform: scale(1.02);
+  }
+  to {
+    transform: scale(1.12);
+  }
+}
+
+@keyframes ie-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ie-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes ie-pulse-dot {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(2.1);
+  }
+}
+
+.reveal {
+  opacity: 0;
+}
+.reveal[data-shown="true"] {
+  animation: ie-fade-up 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.slide-art {
+  animation: ie-slow-zoom 14s ease-out forwards;
+}
+
+.marquee-track {
+  animation: ie-marquee 42s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+.spin-slow {
+  animation: ie-spin 9s linear infinite;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal,
+  .reveal[data-shown="true"] {
+    opacity: 1;
+    animation: none;
+  }
+  .slide-art,
+  .marquee-track,
+  .spin-slow {
+    animation: none;
+  }
+}
