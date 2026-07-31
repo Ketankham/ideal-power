@@ -76,6 +76,9 @@ unused stock Next.js icons.
 
 ## Documentation
 
+- **[`docs/APP-SPEC.md`](docs/APP-SPEC.md) — the application specification. Start here.**
+  Users, routes, page-by-page inputs, component reference, content model, form specs,
+  admin flows and use cases, and the tracked gap list.
 - [`docs/ADMIN-PLAN.md`](docs/ADMIN-PLAN.md) — admin panel and AWS platform plan
 - [`docs/DESIGN-SYSTEM.md`](docs/DESIGN-SYSTEM.md) — brand tokens, type scale, components
 - [`AGENTS.md`](AGENTS.md) — rules for AI coding agents
