@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ideal Engineering
 
-## Getting Started
+Corporate site for **Ideal Engineering & Infrastructure Limited** — a listed Indian
+infrastructure group operating power generation, transmission, highway and
+industrial-district assets.
 
-First, run the development server:
+## Stack
+
+| | |
+| --- | --- |
+| Framework | Next.js 16.2.12 (App Router) |
+| UI | React 19.2.4 |
+| Language | TypeScript 5 (strict) |
+| Styling | Tailwind CSS v4 — CSS-first config, no `tailwind.config.js` |
+| Type | Red Hat Display via `next/font/google` |
+| Deployment target | AWS ECS Fargate — see [`docs/ADMIN-PLAN.md`](docs/ADMIN-PLAN.md) |
+
+> ⚠️ Next.js 16 has breaking changes from earlier versions. Middleware is now
+> `proxy.ts`, and caching moved to the Cache Components model. Read
+> `node_modules/next/dist/docs/` before writing code — see [`AGENTS.md`](AGENTS.md).
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev          # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| Script | Purpose |
+| --- | --- |
+| `npm run dev` | Dev server |
+| `npm run build` | Production build |
+| `npm run start` | Serve the production build |
+| `npm run lint` | ESLint (flat config, `eslint.config.mjs`) |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+There is no test suite yet.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Layout
 
-## Learn More
+```
+src/
+├── app/                     one directory per route
+│   ├── layout.tsx           root layout, font, global metadata + title template
+│   ├── page.tsx             home
+│   ├── about-us/  businesses/  businesses/[slug]/  projects/
+│   ├── investors/  sustainability/  newsroom/  careers/  contact/
+│   ├── not-found.tsx
+│   └── globals.css          design tokens + custom utilities
+├── components/              presentational; see docs/DESIGN-SYSTEM.md
+└── lib/
+    ├── site.ts              17 content collections
+    └── businesses.ts        5 business entities + getBusiness()
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Content — read this before editing copy
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**All site content is currently hardcoded in TypeScript.** Copy, statistics, navigation,
+leadership, news and financial figures live in `src/lib/site.ts` and
+`src/lib/businesses.ts`. A few arrays are still inline in their page component (for
+example `values` in `src/app/about-us/page.tsx`).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Per-page SEO is an `export const metadata` in each `page.tsx`;
+`/businesses/[slug]` uses `generateMetadata`. The root layout sets the
+`%s | Ideal Engineering` title template.
 
-## Deploy on Vercel
+Editing content therefore requires a code change and a deploy. Replacing this with a
+database-backed content layer and an admin panel is planned in
+**[`docs/ADMIN-PLAN.md`](docs/ADMIN-PLAN.md)** — start there before adding new content types.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Imagery
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+There are no photographic assets. Every hero, band and map is drawn as inline SVG in
+`src/components/Art.tsx` (`SceneArt`, `SkylineBand`, `IndiaMap`), selected by an `ArtKey`
+of `energy` · `highway` · `urban` · `metering` · `grid`. `public/` holds only the
+unused stock Next.js icons.
+
+## Documentation
+
+- [`docs/ADMIN-PLAN.md`](docs/ADMIN-PLAN.md) — admin panel and AWS platform plan
+- [`docs/DESIGN-SYSTEM.md`](docs/DESIGN-SYSTEM.md) — brand tokens, type scale, components
+- [`AGENTS.md`](AGENTS.md) — rules for AI coding agents
