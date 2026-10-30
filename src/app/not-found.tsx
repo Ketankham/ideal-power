@@ -1,7 +1,12 @@
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { GhostButton, GoldButton } from "@/components/ui";
 
 export default function NotFound() {
   return (
+    <>
+    <Header />
+    <main id="main" className="flex-1">
     <section className="relative isolate flex min-h-[70svh] items-center overflow-hidden bg-navy-950 text-white">
       <span className="hairline-grid absolute inset-0 opacity-60" aria-hidden />
       <span
@@ -27,5 +32,8 @@ export default function NotFound() {
         </div>
       </div>
     </section>
+    </main>
+    <Footer />
+    </>
   );
 }

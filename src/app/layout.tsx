@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Red_Hat_Display } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import QuickLinks from "@/components/QuickLinks";
 import { site } from "@/lib/site";
 
 const redHat = Red_Hat_Display({
@@ -44,20 +41,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${redHat.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col">
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-navy-900 focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-white"
-        >
-          Skip to content
-        </a>
-        <Header />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <Footer />
-        <QuickLinks />
-      </body>
+      <body className="flex min-h-full flex-col">{children}</body>
     </html>
   );
 }

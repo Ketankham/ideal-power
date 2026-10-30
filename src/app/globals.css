@@ -2,6 +2,8 @@
 
 @theme {
   --font-sans: var(--font-red-hat), ui-sans-serif, system-ui, sans-serif;
+  --font-clinic: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-clinic-serif: var(--font-fraunces), Georgia, serif;
 
   /* Brand — navy spine, gold accent (GMR-style), warm ember for data (Adani-style) */
   --color-ink: #16181d;
@@ -19,6 +21,35 @@
   --color-cream: #fdf3e0;
   --color-mist: #e4ebf7;
   --color-sand: #f7f4ee;
+
+  /* Chest & Allergy Clinic (/home) — pine and linen, coral accent */
+  --color-pine-950: #062a26;
+  --color-pine-900: #0a3a34;
+  --color-pine-800: #0e4d45;
+  --color-pine-700: #136157;
+  --color-pine-500: #2e8b7c;
+  --color-sage-200: #cfe3db;
+  --color-sage-100: #e6f1ec;
+  --color-linen: #f8f5ef;
+  --color-coral-500: #ef7a5a;
+  --color-coral-600: #dc6243;
+
+  --animate-breathe: breathe 7s ease-in-out infinite;
+  --animate-marquee: marquee 38s linear infinite;
+  --animate-float: float 9s ease-in-out infinite;
+
+  @keyframes breathe {
+    0%, 100% { transform: scale(0.92); opacity: 0.55; }
+    50% { transform: scale(1.06); opacity: 1; }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
 
   --shadow-card: 0 18px 45px -22px rgb(10 37 64 / 0.45);
   --shadow-lift: 0 30px 70px -30px rgb(10 37 64 / 0.55);
@@ -195,6 +226,14 @@ body {
   .slide-art,
   .marquee-track,
   .spin-slow {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-breathe,
+  .animate-marquee,
+  .animate-float {
     animation: none;
   }
 }
