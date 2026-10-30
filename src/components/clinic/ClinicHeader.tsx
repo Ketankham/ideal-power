@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { clinic, telHref } from "@/lib/clinic";
+import OpenStatus from "./OpenStatus";
 
 const nav = [
   { label: "About", href: "#about" },
@@ -51,7 +52,24 @@ export default function ClinicHeader() {
   }, []);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-5">
+    <header className="fixed inset-x-0 top-9 z-50 px-3 pt-3 sm:px-5">
+      <div
+        className={`mx-auto hidden max-w-6xl items-center justify-between overflow-hidden px-5 text-xs text-pine-900/70 transition-all duration-500 md:flex ${
+          scrolled ? "h-0 opacity-0" : "h-8 opacity-100"
+        }`}
+      >
+        <OpenStatus className="font-medium text-pine-900" />
+        <span className="flex items-center gap-5">
+          {clinic.phones.map((p) => (
+            <a key={p} href={telHref(p)} className="transition hover:text-pine-950">
+              {p}
+            </a>
+          ))}
+          <a href={`mailto:${clinic.emails.info}`} className="transition hover:text-pine-950">
+            {clinic.emails.info}
+          </a>
+        </span>
+      </div>
       <div
         className={`mx-auto flex max-w-6xl items-center justify-between rounded-2xl px-4 py-2.5 transition-all duration-500 sm:px-5 ${
           scrolled || open

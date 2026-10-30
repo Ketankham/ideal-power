@@ -4,6 +4,9 @@
   --font-sans: var(--font-red-hat), ui-sans-serif, system-ui, sans-serif;
   --font-clinic: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   --font-clinic-serif: var(--font-fraunces), Georgia, serif;
+  --font-t2: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-t3: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-t3-serif: var(--font-instrument), Georgia, serif;
 
   /* Brand — navy spine, gold accent (GMR-style), warm ember for data (Adani-style) */
   --color-ink: #16181d;

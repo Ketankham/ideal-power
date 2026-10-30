@@ -121,3 +121,24 @@ export const faqs = [
     a: "Bring any previous prescriptions, X-rays, CT scans or test reports, and the inhalers or medicines you currently use.",
   },
 ];
+
+export const reviewsHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(clinic.mapQuery)}`;
+
+export const firstVisit = [
+  {
+    title: "Call or request a slot",
+    body: "Phone the clinic or use the form below. We confirm your time by phone.",
+  },
+  {
+    title: "Bring your history",
+    body: "Bring old prescriptions, X-rays, CT scans, test reports and the inhalers you use now.",
+  },
+  {
+    title: "Consult & tests",
+    body: "A full consultation, with in-clinic tests where they are needed to confirm the diagnosis.",
+  },
+  {
+    title: "Leave with a plan",
+    body: "A written treatment plan, a check of your inhaler technique and a follow-up date.",
+  },
+];

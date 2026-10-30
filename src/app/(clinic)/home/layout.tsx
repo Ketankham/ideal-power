@@ -1,18 +1,20 @@
 import type { Metadata } from "next";
-import { Fraunces, Manrope } from "next/font/google";
-import ClinicHeader from "@/components/clinic/ClinicHeader";
+import { Fraunces, Instrument_Serif, Manrope, Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
+import ThemeSwitcher from "@/components/clinic/ThemeSwitcher";
 import { clinic } from "@/lib/clinic";
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+// Theme 1
+const fraunces = Fraunces({ variable: "--font-fraunces", subsets: ["latin"], axes: ["opsz", "SOFT"], display: "swap" });
+const manrope = Manrope({ variable: "--font-manrope", subsets: ["latin"], display: "swap" });
+// Theme 2
+const jakarta = Plus_Jakarta_Sans({ variable: "--font-jakarta", subsets: ["latin"], display: "swap" });
+// Theme 3
+const grotesk = Space_Grotesk({ variable: "--font-grotesk", subsets: ["latin"], display: "swap" });
+const instrument = Instrument_Serif({
+  variable: "--font-instrument",
   subsets: ["latin"],
-  axes: ["opsz", "SOFT"],
-  display: "swap",
-});
-
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -41,15 +43,17 @@ export default function ClinicLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className={`${fraunces.variable} ${manrope.variable} flex-1 bg-linen font-clinic text-pine-950 selection:bg-sage-200 selection:text-pine-950`}>
+    <div
+      className={`${fraunces.variable} ${manrope.variable} ${jakarta.variable} ${grotesk.variable} ${instrument.variable} flex-1 pt-9`}
+    >
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-pine-900 focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-white"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-12 focus:z-[100] focus:rounded-lg focus:bg-black focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-white"
       >
         Skip to content
       </a>
-      <ClinicHeader />
-      <main id="main">{children}</main>
+      <ThemeSwitcher />
+      {children}
     </div>
   );
 }

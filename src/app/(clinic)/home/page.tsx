@@ -1,7 +1,12 @@
-import { ClinicMark } from "@/components/clinic/ClinicHeader";
+import ClinicHeader, { ClinicMark } from "@/components/clinic/ClinicHeader";
+import MobileActionBar from "@/components/clinic/MobileActionBar";
 import SymptomCheck from "@/components/clinic/SymptomCheck";
 import AppointmentForm from "@/components/clinic/AppointmentForm";
-import { approach, clinic, conditions, faqs, telHref } from "@/lib/clinic";
+import { approach, clinic, conditions, faqs, firstVisit, reviewsHref, telHref } from "@/lib/clinic";
+import { airBand, getAir } from "@/lib/air";
+
+// Re-render at most every 30 minutes so the air-quality reading stays current.
+export const revalidate = 1800;
 
 const yearsOfPractice = new Date().getFullYear() - clinic.doctor.specialisedIn;
 
@@ -61,7 +66,7 @@ function BreathArt() {
 
 function Hero() {
   return (
-    <section className="relative isolate overflow-hidden pb-20 pt-32 sm:pt-40">
+    <section className="relative isolate overflow-hidden pb-24 pt-32 sm:pt-44">
       <div
         className="absolute inset-0 -z-10"
         style={{
@@ -98,19 +103,6 @@ function Hero() {
             </a>
           </div>
 
-          <dl className="mt-14 grid max-w-lg grid-cols-3 gap-6 border-t border-pine-900/10 pt-8">
-            {[
-              { k: `${yearsOfPractice}+`, v: "Years of practice" },
-              { k: `${clinic.established}`, v: "Clinic founded" },
-              { k: "6", v: "Days a week" },
-            ].map((s) => (
-              <div key={s.v}>
-                <dt className="sr-only">{s.v}</dt>
-                <dd className="font-clinic-serif text-3xl text-pine-950">{s.k}</dd>
-                <dd className="mt-1 text-xs text-pine-900/55">{s.v}</dd>
-              </div>
-            ))}
-          </dl>
         </div>
         <BreathArt />
       </div>
@@ -402,17 +394,193 @@ function Visit() {
   );
 }
 
+function TrustStrip() {
+  const items = [
+    { k: "9 yrs", v: "at GTB Hospitals, Mumbai" },
+    { k: `${yearsOfPractice}+ yrs`, v: "in chest medicine" },
+    { k: `Since ${clinic.practiceSince}`, v: "caring for Navi Mumbai" },
+    { k: "Mon – Sat", v: clinic.hours.time },
+  ];
+  return (
+    <div className="mx-auto -mt-6 max-w-6xl px-5">
+      <ul className="grid grid-cols-2 gap-px overflow-hidden rounded-3xl bg-pine-900/10 ring-1 ring-pine-900/10 lg:grid-cols-4">
+        {items.map((i) => (
+          <li key={i.v} className="bg-white/80 px-6 py-5 backdrop-blur">
+            <p className="font-clinic-serif text-2xl text-pine-950">{i.k}</p>
+            <p className="mt-0.5 text-sm text-pine-900/55">{i.v}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+const toneStyles = {
+  good: { ring: "#2e8b7c", chip: "bg-emerald-100 text-emerald-900" },
+  moderate: { ring: "#d9a62e", chip: "bg-amber-100 text-amber-900" },
+  sensitive: { ring: "#ef7a5a", chip: "bg-orange-100 text-orange-900" },
+  unhealthy: { ring: "#c2412d", chip: "bg-red-100 text-red-900" },
+} as const;
+
+async function AirToday() {
+  const air = await getAir();
+  if (!air) return null;
+  const band = airBand(air.aqi);
+  const tone = toneStyles[band.tone];
+  const pct = Math.min(air.aqi / 300, 1);
+  const updated = new Date(`${air.time}:00+05:30`).toLocaleTimeString("en-IN", {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: "Asia/Kolkata",
+  });
+
+  return (
+    <section className="pb-4 pt-24 sm:pt-32" aria-labelledby="air-heading">
+      <div className="mx-auto max-w-6xl px-5">
+        <div className="grid items-center gap-10 overflow-hidden rounded-[2.5rem] bg-white p-7 shadow-[0_30px_80px_-50px_rgb(6_42_38/0.5)] ring-1 ring-pine-900/5 sm:p-12 lg:grid-cols-[auto_1fr_auto]">
+          <div className="relative mx-auto size-44 shrink-0">
+            <svg viewBox="0 0 100 100" className="size-full -rotate-90" aria-hidden>
+              <circle cx="50" cy="50" r="42" fill="none" stroke="#e6f1ec" strokeWidth="8" />
+              <circle
+                cx="50"
+                cy="50"
+                r="42"
+                fill="none"
+                stroke={tone.ring}
+                strokeWidth="8"
+                strokeLinecap="round"
+                strokeDasharray={`${pct * 263.9} 263.9`}
+              />
+            </svg>
+            <div className="absolute inset-0 grid place-items-center text-center">
+              <div>
+                <p className="font-clinic-serif text-5xl leading-none text-pine-950">{air.aqi}</p>
+                <p className="mt-1 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-pine-900/50">US AQI</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <Eyebrow>Live · Navi Mumbai air today</Eyebrow>
+            <h2 id="air-heading" className="mt-4 font-clinic-serif text-[clamp(1.7rem,3vw,2.4rem)] font-light leading-tight">
+              <span className={`mr-2 inline-block rounded-full px-3 py-1 align-middle font-clinic text-sm font-semibold ${tone.chip}`}>
+                {band.label}
+              </span>
+              <span className="align-middle">What it means for your lungs</span>
+            </h2>
+            <p className="mt-3 max-w-xl leading-[1.75] text-pine-900/65">{band.advice}</p>
+            <p className="mt-3 text-xs text-pine-900/45">
+              Updated {updated} IST · Source: Open-Meteo. This is general guidance, not medical advice.
+            </p>
+          </div>
+
+          <dl className="grid grid-cols-3 gap-3 lg:grid-cols-1">
+            {[
+              { k: "PM2.5", v: air.pm25 },
+              { k: "PM10", v: air.pm10 },
+              { k: "Ozone", v: air.ozone },
+            ].map((m) => (
+              <div key={m.k} className="rounded-2xl bg-linen px-5 py-3">
+                <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-pine-900/50">{m.k}</dt>
+                <dd className="font-clinic-serif text-xl text-pine-950">
+                  {Math.round(m.v)} <span className="font-clinic text-xs text-pine-900/45">µg/m³</span>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FirstVisit() {
+  return (
+    <section className="bg-white py-24 sm:py-32" aria-labelledby="visit-heading">
+      <div className="mx-auto max-w-6xl px-5">
+        <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <div>
+            <Eyebrow>New patients</Eyebrow>
+            <h2
+              id="visit-heading"
+              className="mt-5 max-w-xl font-clinic-serif text-[clamp(2rem,4vw,3.1rem)] font-light leading-[1.08] tracking-[-0.015em]"
+            >
+              What to expect on your first visit.
+            </h2>
+          </div>
+          <a href="#book" className="w-fit rounded-full bg-pine-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-pine-700">
+            Request a slot
+          </a>
+        </div>
+        <ol className="relative mt-14 grid gap-8 md:grid-cols-4 md:gap-6">
+          <span
+            className="absolute left-0 right-0 top-6 hidden h-px bg-gradient-to-r from-pine-500/40 via-pine-500/20 to-transparent md:block"
+            aria-hidden
+          />
+          {firstVisit.map((f, i) => (
+            <li key={f.title} className="relative">
+              <span className="relative grid size-12 place-items-center rounded-full bg-sage-100 font-clinic-serif text-lg text-pine-900 ring-8 ring-white">
+                {i + 1}
+              </span>
+              <h3 className="mt-6 text-lg font-semibold text-pine-950">{f.title}</h3>
+              <p className="mt-2 text-[0.93rem] leading-relaxed text-pine-900/65">{f.body}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+function Reviews() {
+  return (
+    <section className="px-5 pb-24 sm:pb-32">
+      <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-8 rounded-[2.5rem] bg-sage-100 p-8 sm:p-12 md:flex-row md:items-center">
+        <div>
+          <p className="flex gap-1 text-coral-500" aria-hidden>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <svg key={i} viewBox="0 0 20 20" className="size-5" fill="currentColor">
+                <path d="M10 1.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L10 14.8l-5.2 2.8 1-5.8L1.5 7.7l5.9-.8z" />
+              </svg>
+            ))}
+          </p>
+          <h2 className="mt-4 max-w-xl font-clinic-serif text-[clamp(1.7rem,3vw,2.4rem)] font-light leading-tight">
+            Caring for families across Navi Mumbai for nearly three decades.
+          </h2>
+          <p className="mt-2 text-pine-900/65">Read patients&apos; own reviews on Google.</p>
+        </div>
+        <a
+          href={reviewsHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="shrink-0 rounded-full bg-white px-6 py-3 text-sm font-semibold text-pine-900 ring-1 ring-pine-900/10 transition hover:bg-pine-900 hover:text-white"
+        >
+          Read patient reviews ↗
+        </a>
+      </div>
+    </section>
+  );
+}
+
 export default function ClinicHome() {
   return (
-    <>
+    <div className="bg-linen font-clinic text-pine-950 selection:bg-sage-200 selection:text-pine-950">
+      <ClinicHeader />
+      <main id="main" className="pb-20 md:pb-0">
       <Hero />
-      <Marquee />
+      <TrustStrip />
+      <AirToday />
       <CheckSection />
+      <Marquee />
       <Conditions />
       <Doctor />
       <Approach />
+      <FirstVisit />
       <Faq />
+      <Reviews />
       <Visit />
-    </>
+      </main>
+      <MobileActionBar />
+    </div>
   );
 }
